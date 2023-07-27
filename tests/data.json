@@ -1,0 +1,59 @@
+[{
+  "_id": {
+    "$oid": "64c0d6ed7b4c83d5cbd773af"
+  },
+  "flow_volume": 0.3,
+  "status": "closed",
+  "openTime": {
+    "$date": {
+      "$numberLong": "1690455454409"
+    }
+  },
+  "closeTime": {
+    "$date": {
+      "$numberLong": "1690455457912"
+    }
+  },
+  "drink_name": "cerveza 0,0",
+  "tank_size": 100,
+  "remaining": 50
+},{
+  "_id": {
+    "$oid": "64c0d6ed7b4c83d5cbd773b0"
+  },
+  "flow_volume": 0.5,
+  "status": "closed",
+  "openTime": {
+    "$date": {
+      "$numberLong": "1690456935099"
+    }
+  },
+  "closeTime": {
+    "$date": {
+      "$numberLong": "1690456937612"
+    }
+  },
+  "drink_name": "coca cola zero",
+  "tank_size": 500,
+  "remaining": 493.36199999999997
+},{
+  "_id": {
+    "$oid": "64c25296df61bae95a84f028"
+  },
+  "flow_volume": 0.01,
+  "status": "closed",
+  "openTime": {
+    "$date": {
+      "$numberLong": "1690461294104"
+    }
+  },
+  "closeTime": {
+    "$date": {
+      "$numberLong": "1690461299785"
+    }
+  },
+  "drink_name": "nestea",
+  "tank_size": 57,
+  "remaining": 56.796200000000006,
+  "__v": 0
+}]

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get your drink!</title>
+  <style>
+    li {
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+    button {
+      font-size: 16px;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dispensers</h1>
+  <div>
+    <h2>Available Drinks:</h2>
+    <ul id="dispensersList"></ul>
+  </div>
+  <div>
+    <h2>Selected Drink</h2>
+    <p id="selectedDispenserId">No dispenser selected</p>
+    <button id="openDispenser" style="display: none;">Open Dispenser</button>
+    <button id="closeDispenser" style="display: none;">Close Dispenser</button>
+  </div>
+
+  <script>
+    const dispensersList = document.getElementById('dispensersList');
+    const selectedDispenserId = document.getElementById('selectedDispenserId');
+    const openDispenserButton = document.getElementById('openDispenser');
+    const closeDispenserButton = document.getElementById('closeDispenser');
+
+    async function showDispensers() {
+      try {
+        const response = await fetch('http://localhost:3000/dispensers');
+        if (!response.ok) {
+          throw new Error('Failed to fetch dispensers.');
+        }
+        const dispensers = await response.json();
+        dispensersList.innerHTML = '';
+        dispensers.forEach((dispenser) => {
+          const listItem = document.createElement('li');
+          listItem.textContent = `Dispenser: ${dispenser.drink_name} |  Remaining: ${dispenser.remaining.toFixed(2).toLocaleString("en-US")}`;
+          listItem.addEventListener('click', () => {
+            selectDispenser(dispenser._id, dispenser.drink_name);
+          });
+          dispensersList.appendChild(listItem);
+        });
+      } catch (error) {
+        console.error(error.message);
+        dispensersList.innerHTML = '<li>Error: Failed to fetch dispensers.</li>';
+      }
+    }
+
+    // Function to select a dispenser and update buttons
+    function selectDispenser(dispenserId, name) {
+      selectedDispenserId.textContent = `Selected Dispenser: ${dispenserId}`;
+      openDispenserButton.style.display = 'block';
+      closeDispenserButton.style.display = 'block';
+    }
+
+    // Function to open/close dispenser
+    async function toggleDispenser(status) {
+      console.log("selectedDispenserId: " + JSON.stringify(selectedDispenserId.textContent))
+      const dispenserId = selectedDispenserId.textContent.split(': ')[1];
+      console.log("dispenserId: " + JSON.stringify(dispenserId))
+
+      try {
+        console.log("Status: " + status)
+        const response = await fetch(`http://localhost:3000/dispensers/${dispenserId}/${status ? 'open' : 'close'}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ is_open: status })
+        });
+        if (!response.ok) {
+          throw new Error('Failed to toggle dispenser status.');
+        }
+        const updatedDispenser = await response.json();
+        if (updatedDispenser.is_open === "already_open") {
+          alert('Dispenser is already opened!');
+        }
+        else if(updatedDispenser.is_open == "open") {
+          alert('Dispenser is open!');
+        }  else if(updatedDispenser.is_open == "already_close") {
+          alert('Dispenser is already closed!');
+        } 
+        else if(updatedDispenser.is_open == "closed") {
+          alert(`Dispenser is closed! You've dispensed: ${updatedDispenser.spent.toFixed(2)} liters`);
+        } 
+        showDispensers(); // Update the dispensers list
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
+
+    openDispenserButton.addEventListener('click', () => {
+      toggleDispenser(true); // Open the dispenser
+    });
+
+    closeDispenserButton.addEventListener('click', () => {
+      toggleDispenser(false); // Close the dispenser
+    });
+
+    showDispensers();
+  </script>
+</body>
+</html>
